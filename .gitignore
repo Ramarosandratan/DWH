@@ -1,0 +1,52 @@
+# Byte‑compiled / optimized / DLL files
+__pycache__/
+*.py[cod]                                    # fichiers compilés Python :contentReference[oaicite:0]{index=0}
+*$py.class
+
+# Virtual environments
+.env/                                        # dossiers d’environnement (venv, .env, ENV…) :contentReference[oaicite:1]{index=1}
+venv/
+env/
+ENV/
+airflow-docker/airflow_env
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Logs and databases
+*.log
+*.sqlite3
+
+# PyCharm
+.idea/                                       # dossier de configuration PyCharm :contentReference[oaicite:2]{index=2}
+*.iml                                       # modules IntelliJ/PyCharm
+
+# JetBrains Rider, WebStorm, IntelliJ, etc.
+*.ipr
+*.iws
+
+# macOS
+.DS_Store                                    # fichier de métadonnées macOS :contentReference[oaicite:3]{index=3}
+
+# Coverage reports
+htmlcov/
+.coverage
+
+# pytest
+.cache/
+
+# MyPy
+.mypy_cache/
+
+# Docker
+*.pid
+*.sock
+
+# VSCode (si utilisé)
+.vscode/
+
+# Généré via https://www.toptal.com/developers/gitignore › Python, PyCharm :contentReference[oaicite:4]{index=4}
