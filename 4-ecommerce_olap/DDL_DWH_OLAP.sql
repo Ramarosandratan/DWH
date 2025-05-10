@@ -1,68 +1,75 @@
--- 1. Schéma DWH
+-- 1. Schéma cible
 CREATE SCHEMA IF NOT EXISTS ecommerce_dwh;
 SET search_path = ecommerce_dwh;
 
 -- 2. Dimension Date
-CREATE TABLE dim_date
-(
-    date_key    DATE PRIMARY KEY,
-    day         INT         NOT NULL,
-    month       INT         NOT NULL,
-    quarter     INT         NOT NULL,
-    year        INT         NOT NULL,
+CREATE TABLE IF NOT EXISTS dim_date (
+    date_key    DATE        PRIMARY KEY,
+    day         SMALLINT    NOT NULL,
+    month       SMALLINT    NOT NULL,
+    quarter     SMALLINT    NOT NULL,
+    year        SMALLINT    NOT NULL,
     day_of_week VARCHAR(10) NOT NULL
 );
 
--- 3. Dimension Time (optionnelle)
-CREATE TABLE dim_time
-(
-    time_key TIME PRIMARY KEY,
-    hour     INT        NOT NULL,
-    minute   INT        NOT NULL,
-    am_pm    VARCHAR(2) NOT NULL
+-- 3. Dimension Time
+CREATE TABLE IF NOT EXISTS dim_time (
+    time_key TIME        PRIMARY KEY,
+    hour     SMALLINT    NOT NULL,
+    minute   SMALLINT    NOT NULL,
+    second   SMALLINT    NOT NULL,
+    am_pm    VARCHAR(2)  NOT NULL
 );
 
--- Dimension Product
-CREATE TABLE dim_product
-(
-    product_key   INT PRIMARY KEY,
-    product_id    INT            NOT NULL,
-    product_name  TEXT           NOT NULL,
-    category_id   INT            NOT NULL,
-    category_name TEXT           NOT NULL,
-    price         NUMERIC(10, 2) NOT NULL
+-- 4. Dimension Product
+CREATE TABLE IF NOT EXISTS dim_product (
+    product_key   SERIAL    PRIMARY KEY,
+    product_id    INT        NOT NULL UNIQUE,
+    product_name  TEXT       NOT NULL,
+    category_id   INT        NOT NULL,
+    category_name TEXT       NOT NULL,
+    price         NUMERIC(10,2) NOT NULL
 );
 
 -- 5. Dimension Customer
-CREATE TABLE dim_customer
-(
-    customer_key INT PRIMARY KEY,
-    client_id    INT  NOT NULL,
-    full_name    TEXT NOT NULL,
-    email        TEXT NOT NULL,
-    signup_date  DATE NOT NULL
+CREATE TABLE IF NOT EXISTS dim_customer (
+    customer_key SERIAL    PRIMARY KEY,
+    client_id    INT       NOT NULL UNIQUE,
+    full_name    TEXT      NOT NULL,
+    email        TEXT      NOT NULL,
+    signup_date  DATE      NOT NULL
 );
 
 -- 6. Dimension Payment Method
-CREATE TABLE dim_payment_method
-(
-    payment_method_key SERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS dim_payment_method (
+    payment_method_key SERIAL     PRIMARY KEY,
     method             VARCHAR(50) UNIQUE NOT NULL
 );
 
--- Table de faits FactSales
-CREATE TABLE fact_sales
-(
-    sale_key           SERIAL PRIMARY KEY,
-    sale_id            INT            NOT NULL,
-    date_key           DATE           NOT NULL REFERENCES dim_date (date_key),
-    time_key           TIME           NOT NULL REFERENCES dim_time (time_key),
-    product_key        INT            NOT NULL REFERENCES dim_product (product_key),
-    customer_key       INT            NOT NULL REFERENCES dim_customer (customer_key),
-    quantity           INT            NOT NULL,
-    total_amount       NUMERIC(10, 2) NOT NULL,
-    payment_method_key INT            NOT NULL REFERENCES dim_payment_method (payment_method_key)
+-- 7. Table de faits
+CREATE TABLE IF NOT EXISTS fact_sales (
+    sale_key           SERIAL     PRIMARY KEY,
+    sale_id            INT        NOT NULL UNIQUE,
+    date_key           DATE       NOT NULL REFERENCES dim_date(date_key),
+    time_key           TIME       NOT NULL REFERENCES dim_time(time_key),
+    product_key        INT        NOT NULL REFERENCES dim_product(product_key),
+    customer_key       INT        NOT NULL REFERENCES dim_customer(customer_key),
+    quantity           INT        NOT NULL,
+    total_amount       NUMERIC(10,2) NOT NULL,
+    payment_method_key INT        NOT NULL REFERENCES dim_payment_method(payment_method_key)
 );
+
+-- Index sur les clés de jointure dans la table de faits
+CREATE INDEX IF NOT EXISTS idx_fact_date_key ON fact_sales(date_key);      -- dimension date :contentReference[oaicite:2]{index=2}
+CREATE INDEX IF NOT EXISTS idx_fact_time_key ON fact_sales(time_key);      -- dimension time :contentReference[oaicite:3]{index=3}
+CREATE INDEX IF NOT EXISTS idx_fact_product_key ON fact_sales(product_key);-- dimension product :contentReference[oaicite:4]{index=4}
+CREATE INDEX IF NOT EXISTS idx_fact_customer_key ON fact_sales(customer_key);-- dimension customer :contentReference[oaicite:5]{index=5}
+CREATE INDEX IF NOT EXISTS idx_fact_pm_key ON fact_sales(payment_method_key);-- dimension payment method :contentReference[oaicite:6]{index=6}
+
+-- Index multi‑colonnes pour requêtes analytiques fréquent (ex. date + product)
+CREATE INDEX IF NOT EXISTS idx_fact_date_product ON fact_sales(date_key, product_key); :contentReference[oaicite:7]{index=7}
+
+
 
 /*
 

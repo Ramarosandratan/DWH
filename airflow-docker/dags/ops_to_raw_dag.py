@@ -7,6 +7,10 @@ from datetime import datetime
 
 # Schémas des tables RAW
 RAW_TABLE_SCHEMAS = {
+    "schema": """
+        CREATE SCHEMA IF NOT EXISTS raw;
+        SET search_path = raw;
+    """,
     'categories_raw': """
                       CREATE TABLE IF NOT EXISTS raw.categories_raw
                       (
