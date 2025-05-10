@@ -21,16 +21,19 @@ dist/
 *.log
 *.sqlite3
 
-# PyCharm
-.idea/                                       # dossier de configuration PyCharm :contentReference[oaicite:2]{index=2}
-*.iml                                       # modules IntelliJ/PyCharm
-
-# JetBrains Rider, WebStorm, IntelliJ, etc.
+# JetBrains PyCharm, WebStorm, IntelliJ, etc.
 *.ipr
 *.iws
+.idea/*
+!.idea/vcs.xml           # configuration VCS partagée
+!.idea/encodings.xml     # encodages de fichiers
+!.idea/codeStyleSettings.xml  # conventions de formatage
+!.idea/modules.xml       # modules du projet
+!.idea/*.iml             # modules IntelliJ IDEA
+
 
 # macOS
-.DS_Store                                    # fichier de métadonnées macOS :contentReference[oaicite:3]{index=3}
+.DS_Store
 
 # Coverage reports
 htmlcov/
