@@ -19,6 +19,5 @@ docker compose restart
 
 # Copy the csv flat file to Docker if needed 
 docker exec -it airflow-worker mkdir -p /opt/airflow/resource
+docker cp ../1-ecommerce_oltp/payment_history.csv airflow-worker:/opt/airflow/resource/payment_history.csv
 
-# Change the file path here ...
-docker cp /Users/nomena/TAFF/DWH/1-ecommerce_ops/payment_history.csv airflow-worker:/opt/airflow/resource/payment_history.csv

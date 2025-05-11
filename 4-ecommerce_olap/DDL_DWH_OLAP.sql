@@ -67,7 +67,7 @@ CREATE INDEX IF NOT EXISTS idx_fact_customer_key ON fact_sales(customer_key);-- 
 CREATE INDEX IF NOT EXISTS idx_fact_pm_key ON fact_sales(payment_method_key);-- dimension payment method :contentReference[oaicite:6]{index=6}
 
 -- Index multi‑colonnes pour requêtes analytiques fréquent (ex. date + product)
-CREATE INDEX IF NOT EXISTS idx_fact_date_product ON fact_sales(date_key, product_key); :contentReference[oaicite:7]{index=7}
+CREATE INDEX IF NOT EXISTS idx_fact_date_product ON fact_sales(date_key, product_key);
 
 
 

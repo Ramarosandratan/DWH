@@ -8,7 +8,7 @@ LANGUAGE plpgsql
 AS $$
 BEGIN
     -- 1. Faits (référence toutes les dimensions)
-    TRUNCATE TABLE fact_sales CASCADE;
+    TRUNCATE TABLE ecommerce_dwh.fact_sales CASCADE;
 
     -- 2. Dimensions
     TRUNCATE TABLE ecommerce_dwh.dim_time CASCADE;
@@ -22,3 +22,27 @@ BEGIN
   RAISE NOTICE 'All tables truncated in ecommerce_dwh';
 END;
 $$;
+
+
+/*******/
+-- 1. Faits (référence toutes les dimensions)
+    TRUNCATE TABLE ecommerce_dwh.fact_sales
+        RESTART IDENTITY
+        CASCADE;
+
+    -- 2. Dimensions
+    TRUNCATE TABLE ecommerce_dwh.dim_time
+        RESTART IDENTITY
+        CASCADE;
+    TRUNCATE TABLE ecommerce_dwh.dim_date
+        RESTART IDENTITY
+        CASCADE;
+    TRUNCATE TABLE ecommerce_dwh.dim_product
+        RESTART IDENTITY
+        CASCADE;
+    TRUNCATE TABLE ecommerce_dwh.dim_customer
+        RESTART IDENTITY
+        CASCADE;
+    TRUNCATE TABLE ecommerce_dwh.dim_payment_method
+        RESTART IDENTITY
+        CASCADE;
