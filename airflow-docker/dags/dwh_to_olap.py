@@ -167,16 +167,7 @@ def create_dag():
             autocommit=True
         )
 
-        # 2. Truncate
-        with TaskGroup('truncate_task') as truncate_task:
-            SQLExecuteQueryOperator(
-                task_id='truncate_tables',
-                sql='CALL ecommerce_dwh.truncate_all_tables()',
-                conn_id='postgres_dwh',
-                autocommit=True
-            )
-
-        # 3. Clean & load tasks
+        # 2. Clean & load tasks
         tables = [
             ('dim_date', "SELECT * FROM ecommerce_dwh_star.dim_date"),
             ('dim_time', "SELECT * FROM ecommerce_dwh_star.dim_time"),
@@ -198,12 +189,12 @@ def create_dag():
                 }
             )
 
-        # 4. Dépendances dimension → fact
+        # 3. Dépendances dimension → fact
         for dim in ['dim_date', 'dim_time', 'dim_product', 'dim_customer', 'dim_payment_method']:
             tasks[dim] >> tasks['fact_sales']
 
-        # 5. Chaînage global
-        initialize_schema >> truncate_task >> list(tasks.values())
+        # 4. Chaînage global
+        initialize_schema >> list(tasks.values())
 
         return dag
 
