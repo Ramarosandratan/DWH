@@ -80,12 +80,7 @@ BEGIN
 END;
 $$;
 
--- 2.3 dim_payment_method (unchanged parsing)
--- No date parsing here
-
--- 2.4 dim_product (unchanged parsing)
-
--- 2.5 dim_customer
+-- 2.3 dim_customer
 CREATE OR REPLACE PROCEDURE ecommerce_dwh_star.load_dim_customer()
   LANGUAGE plpgsql AS
 $$
@@ -105,6 +100,55 @@ BEGIN
   );
 END;
 $$;
+
+-- 2.4 load_dim_payment_method
+CREATE OR REPLACE PROCEDURE ecommerce_dwh_star.load_dim_payment_method()
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  INSERT INTO ecommerce_dwh_star.dim_payment_method(payment_method_key, method)
+  SELECT
+    nextval('seq_dim_payment_method_key'),
+    upper(trim(src.method))
+  FROM (
+    SELECT DISTINCT method
+    FROM raw.payment_history_raw
+    WHERE method IS NOT NULL
+  ) AS src
+  WHERE NOT EXISTS (
+    SELECT 1
+      FROM ecommerce_dwh_star.dim_payment_method tgt
+     WHERE tgt.method = upper(trim(src.method))
+  );
+END;
+$$;
+
+-- 2.5 load_dim_product
+CREATE OR REPLACE PROCEDURE ecommerce_dwh_star.load_dim_product()
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  INSERT INTO ecommerce_dwh_star.dim_product
+      (product_key, product_id, product_name, category_id, category_name, price)
+  SELECT
+    nextval('seq_dim_product_key'),
+    (trim(p.product_id))::INT,
+    upper(trim(p.name)),
+    (trim(p.category_id))::INT,
+    upper(trim(c.name)),
+    (replace(replace(trim(p.price), ' ', ''), ',', '.'))::NUMERIC(10,2)
+  FROM raw.products_raw p
+  LEFT JOIN raw.categories_raw c
+    ON trim(p.category_id) = trim(c.category_id)
+  WHERE NOT EXISTS (
+    SELECT 1
+      FROM ecommerce_dwh_star.dim_product tgt
+     WHERE tgt.product_id = (trim(p.product_id))::INT
+  );
+END;
+$$;
+
+
 
 -- 2.6 fact_sales
 CREATE OR REPLACE PROCEDURE ecommerce_dwh_star.load_fact_sales()
