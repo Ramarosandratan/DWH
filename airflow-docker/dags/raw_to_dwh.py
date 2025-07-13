@@ -97,7 +97,7 @@ with DAG(
     with TaskGroup('load_dwh') as load_dwh:
         etl_master = SQLExecuteQueryOperator(
             task_id='run_etl_master',
-            sql='CALL etl_master()',
+            sql='CALL ecommerce_dwh_star.etl_master()',
             conn_id='postgres_dwh',
             autocommit=True
         )
