@@ -199,3 +199,6 @@ BEGIN
   CALL ecommerce_dwh_star.load_fact_sales();
 END;
 $$;
+
+
+-- DWH_20250702.
