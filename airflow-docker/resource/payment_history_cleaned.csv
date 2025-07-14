@@ -1,0 +1,11 @@
+payment_id,sale_id,client_id,payment_date,amount,method,status
+1,1,1,2025-04-01 10:05:00,3.998,credit_card,completed
+2,2,2,2025-04-02 11:35:00,1.5,paypal,completed
+3,3,3,2025-04-02 14:20:00,49.99,credit_card,completed
+4,4,1,2025-04-03 09:50:00,79.9,bank_transfer,pending
+5,5,4,2025-04-03 16:25:00,59.97,credit_card,completed
+6,6,5,2025-04-04 13:05:00,35.0,paypal,completed
+7,7,2,2025-04-04 17:15:00,9998.0,credit_card,failed
+8,8,6,2025-04-05 12:05:00,12000.0,bank_transfer,completed
+9,9,3,2025-04-05 15:35:00,30.0,credit_card,completed
+10,10,4,2025-04-06 10:55:00,79.9,paypal,completed
